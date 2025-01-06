@@ -32,10 +32,10 @@
             position: relative;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
             background: conic-gradient(
-                #1a1a1a calc(100% - var(--progress, 0%)), 
-                #4a6da7 calc(100% - var(--progress, 0%))
+                #4a6da7 var(--progress, 0%), 
+                #1a1a1a var(--progress, 0%)
             );
-            transform: rotate(-90deg);
+            transform: rotate(0deg);
         }
 
         .clock-face {
@@ -97,7 +97,7 @@
             height: 15px;
             background: white;
             left: 50%;
-            transform-origin: 50% 150px;  /* Half of clock height */
+            transform-origin: 50% 150px;
         }
 
         .controls-corner button,

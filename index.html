@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analog Clock with Timer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             background-color: black;
@@ -30,54 +31,24 @@
             border-radius: 50%;
             position: relative;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-            background: linear-gradient(45deg, #000000, #1a1a1a);
+            background: conic-gradient(
+                #1a1a1a calc(100% - var(--progress, 0%)), 
+                #4a6da7 calc(100% - var(--progress, 0%))
+            );
+            transform: rotate(-90deg);
         }
 
-        .clock::after {
-            content: '';
+        .clock-face {
             position: absolute;
-            width: 15px;
-            height: 15px;
-            background: white;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-        }
-
-        .hand {
-            position: absolute;
-            bottom: 50%;
-            left: 50%;
-            transform-origin: bottom;
-            background-color: white;
-            border-radius: 4px;
-            box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-        }
-
-        .hour {
-            width: 6px;
-            height: 80px;
-            margin-left: -3px;
-        }
-
-        .minute {
-            width: 4px;
-            height: 110px;
-            margin-left: -2px;
-        }
-
-        .second {
-            width: 2px;
-            height: 130px;
-            margin-left: -1px;
-            background-color: #ff0000;
+            width: 100%;
+            height: 100%;
+            transform: rotate(90deg);  /* Counter-rotate to keep markers straight */
         }
 
         .timer {
             font-size: 48px;
             font-weight: bold;
+            margin-top: 2rem;
         }
 
         .controls {
@@ -86,13 +57,18 @@
         }
 
         button {
-            padding: 10px 20px;
+            padding: 8px;
             font-size: 16px;
             cursor: pointer;
             background-color: #333;
             color: white;
             border: 1px solid white;
             border-radius: 5px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         button:hover {
@@ -111,6 +87,7 @@
             right: 20px;
             display: flex;
             gap: 1rem;
+            align-items: center;
         }
 
         /* Add hour markers */
@@ -122,64 +99,65 @@
             left: 50%;
             transform-origin: 50% 150px;  /* Half of clock height */
         }
+
+        .controls-corner button,
+        .controls-corner .button {
+            padding: 8px;
+            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: transparent;
+            color: white;
+            border: none;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .controls-corner button:hover,
+        .controls-corner .button:hover {
+            opacity: 0.7;
+            background-color: transparent;
+        }
     </style>
 </head>
 <body>
     <div class="controls-corner">
-        <button onclick="startTimer()">Start</button>
-        <button onclick="resetTimer()">Reset</button>
+        <button onclick="startTimer()" title="Start Timer">
+            <i class="fas fa-play"></i>
+        </button>
+        <button onclick="resetTimer()" title="Reset Timer">
+            <i class="fas fa-rotate-right"></i>
+        </button>
+        <a href="enjoy-your-day.html" class="button" title="End Session">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
     </div>
     <div class="container">
         <div class="clock">
-            <!-- Add hour markers -->
-            <div class="marker" style="transform: rotate(0deg)"></div>
-            <div class="marker" style="transform: rotate(30deg)"></div>
-            <div class="marker" style="transform: rotate(60deg)"></div>
-            <div class="marker" style="transform: rotate(90deg)"></div>
-            <div class="marker" style="transform: rotate(120deg)"></div>
-            <div class="marker" style="transform: rotate(150deg)"></div>
-            <div class="marker" style="transform: rotate(180deg)"></div>
-            <div class="marker" style="transform: rotate(210deg)"></div>
-            <div class="marker" style="transform: rotate(240deg)"></div>
-            <div class="marker" style="transform: rotate(270deg)"></div>
-            <div class="marker" style="transform: rotate(300deg)"></div>
-            <div class="marker" style="transform: rotate(330deg)"></div>
-            <div class="hand hour"></div>
-            <div class="hand minute"></div>
-            <div class="hand second"></div>
+            <div class="clock-face">
+                <!-- Hour markers -->
+                <div class="marker" style="transform: rotate(0deg)"></div>
+                <div class="marker" style="transform: rotate(30deg)"></div>
+                <div class="marker" style="transform: rotate(60deg)"></div>
+                <div class="marker" style="transform: rotate(90deg)"></div>
+                <div class="marker" style="transform: rotate(120deg)"></div>
+                <div class="marker" style="transform: rotate(150deg)"></div>
+                <div class="marker" style="transform: rotate(180deg)"></div>
+                <div class="marker" style="transform: rotate(210deg)"></div>
+                <div class="marker" style="transform: rotate(240deg)"></div>
+                <div class="marker" style="transform: rotate(270deg)"></div>
+                <div class="marker" style="transform: rotate(300deg)"></div>
+                <div class="marker" style="transform: rotate(330deg)"></div>
+            </div>
         </div>
         <div class="timer">15:00</div>
-        <a href="enjoy-your-day.html" style="
-            color: white;
-            text-decoration: none;
-            margin-top: 1rem;
-            padding: 10px 20px;
-            border: 1px solid white;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        ">End Session</a>
     </div>
 
     <script>
-        // Analog Clock
-        function updateClock() {
-            const now = new Date();
-            const hours = now.getHours() % 12;
-            const minutes = now.getMinutes();
-            const seconds = now.getSeconds();
-
-            const hourDeg = (hours * 30) + (minutes * 0.5);
-            const minuteDeg = minutes * 6;
-            const secondDeg = seconds * 6;
-
-            document.querySelector('.hour').style.transform = `rotate(${hourDeg}deg)`;
-            document.querySelector('.minute').style.transform = `rotate(${minuteDeg}deg)`;
-            document.querySelector('.second').style.transform = `rotate(${secondDeg}deg)`;
-        }
-
-        setInterval(updateClock, 1000);
-        updateClock();
-
         // Timer
         let timeLeft = 900; // 15 minutes in seconds (15 * 60 = 900)
         let timerId = null;
@@ -187,8 +165,14 @@
         function updateTimerDisplay() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
+            const progress = (timeLeft / 900) * 100; // Calculate percentage
+            
+            // Update timer text
             document.querySelector('.timer').textContent = 
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update only the clock fill
+            document.querySelector('.clock').style.setProperty('--progress', `${progress}%`);
         }
 
         function startTimer() {

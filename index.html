@@ -200,11 +200,33 @@
                 transform: translateY(-5px);
             }
         }
+
+        .character-switch {
+            position: fixed;
+            top: 20px;
+            left: 70px;  /* Position it after the theme switch */
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .character-switch i {
+            font-size: 16px;
+            color: var(--text-color);
+        }
+
+        .exercise-icon.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="theme-switch" onclick="toggleTheme()">
         <i class="fas fa-moon"></i>
+    </div>
+    <div class="character-switch" onclick="toggleCharacter()">
+        <i class="fas fa-user"></i>
     </div>
     <div class="controls-corner">
         <input type="number" class="time-input" id="minutes" min="1" max="60" value="15">
@@ -328,6 +350,30 @@
                 icon.classList.add('fa-sun');
                 localStorage.setItem('theme', 'light');
             }
+        }
+
+        function toggleCharacter() {
+            const character = document.querySelector('.exercise-icon');
+            const icon = document.querySelector('.character-switch i');
+            
+            if (character.classList.contains('hidden')) {
+                character.classList.remove('hidden');
+                icon.classList.remove('fa-user-slash');
+                icon.classList.add('fa-user');
+                localStorage.setItem('character', 'shown');
+            } else {
+                character.classList.add('hidden');
+                icon.classList.remove('fa-user');
+                icon.classList.add('fa-user-slash');
+                localStorage.setItem('character', 'hidden');
+            }
+        }
+
+        // Load character preference
+        const savedCharacter = localStorage.getItem('character');
+        if (savedCharacter === 'hidden') {
+            document.querySelector('.exercise-icon').classList.add('hidden');
+            document.querySelector('.character-switch i').classList.replace('fa-user', 'fa-user-slash');
         }
     </script>
 </body>

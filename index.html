@@ -6,15 +6,30 @@
     <title>Analog Clock with Timer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --bg-color: black;
+            --text-color: white;
+            --clock-fill: #4a6da7;
+            --clock-bg: #1a1a1a;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f0f0f0;
+            --text-color: #333;
+            --clock-fill: #4a6da7;
+            --clock-bg: #ffffff;
+        }
+
         body {
-            background-color: black;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
-            color: white;
         }
 
         .container {
@@ -27,13 +42,13 @@
         .clock {
             width: 300px;
             height: 300px;
-            border: 4px solid white;
+            border: 4px solid var(--text-color);
             border-radius: 50%;
             position: relative;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
             background: conic-gradient(
-                #4a6da7 var(--progress, 0%), 
-                #1a1a1a var(--progress, 0%)
+                var(--clock-fill) var(--progress, 0%), 
+                var(--clock-bg) var(--progress, 0%)
             );
             transform: rotate(0deg);
         }
@@ -95,7 +110,7 @@
             position: absolute;
             width: 2px;
             height: 15px;
-            background: white;
+            background: var(--text-color);
             left: 50%;
             transform-origin: 50% 150px;
         }
@@ -111,7 +126,7 @@
             justify-content: center;
             cursor: pointer;
             background-color: transparent;
-            color: white;
+            color: var(--text-color);
             border: none;
             text-decoration: none;
             transition: opacity 0.3s;
@@ -125,8 +140,8 @@
 
         .time-input {
             background: transparent;
-            border: 1px solid white;
-            color: white;
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
             padding: 4px;
             font-size: 16px;
             width: 50px;
@@ -146,9 +161,51 @@
             margin-bottom: 1rem;
             font-size: 24px;
         }
+
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .theme-switch i {
+            font-size: 16px;
+            color: var(--text-color);
+        }
+
+        .exercise-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin-left: 0;
+            z-index: 2;
+        }
+
+        .pixel-character {
+            height: 150px;
+            width: auto;
+            image-rendering: pixelated;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-5px);
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="theme-switch" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+    </div>
     <div class="controls-corner">
         <input type="number" class="time-input" id="minutes" min="1" max="60" value="15">
         <button onclick="startTimer()" title="Start Timer">
@@ -177,6 +234,9 @@
                 <div class="marker" style="transform: rotate(270deg)"></div>
                 <div class="marker" style="transform: rotate(300deg)"></div>
                 <div class="marker" style="transform: rotate(330deg)"></div>
+            </div>
+            <div class="exercise-icon">
+                <img src="Alexis.png" alt="Character with thumbs up" class="pixel-character">
             </div>
         </div>
         <div class="timer">15:00</div>
@@ -227,6 +287,47 @@
             timeLeft = minutes * 60;
             totalTime = timeLeft;
             updateTimerDisplay();
+        }
+
+        // Theme switcher
+        function toggleTheme() {
+            const body = document.documentElement;
+            const icon = document.querySelector('.theme-switch i');
+            
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+
+        // Save theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.querySelector('.theme-switch i').classList.replace('fa-moon', 'fa-sun');
+        }
+
+        // Update theme storage on change
+        function toggleTheme() {
+            const body = document.documentElement;
+            const icon = document.querySelector('.theme-switch i');
+            
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            }
         }
     </script>
 </body>

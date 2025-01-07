@@ -122,10 +122,35 @@
             opacity: 0.7;
             background-color: transparent;
         }
+
+        .time-input {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 4px;
+            font-size: 16px;
+            width: 50px;
+            text-align: center;
+            border-radius: 5px;
+            margin: 0;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: #4a6da7;
+        }
+
+        .time-setup {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 24px;
+        }
     </style>
 </head>
 <body>
     <div class="controls-corner">
+        <input type="number" class="time-input" id="minutes" min="1" max="60" value="15">
         <button onclick="startTimer()" title="Start Timer">
             <i class="fas fa-play"></i>
         </button>
@@ -159,24 +184,29 @@
 
     <script>
         // Timer
-        let timeLeft = 900; // 15 minutes in seconds (15 * 60 = 900)
+        let timeLeft = 900; // Default 15 minutes in seconds
         let timerId = null;
+        let totalTime = 900; // Store total time for progress calculation
 
         function updateTimerDisplay() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
-            const progress = (timeLeft / 900) * 100; // Calculate percentage
+            const progress = (timeLeft / totalTime) * 100; // Use totalTime instead of fixed 900
             
-            // Update timer text
             document.querySelector('.timer').textContent = 
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
-            // Update only the clock fill
             document.querySelector('.clock').style.setProperty('--progress', `${progress}%`);
         }
 
         function startTimer() {
             if (timerId === null) {
+                // Get the minutes from input when starting
+                const minutes = parseInt(document.getElementById('minutes').value) || 15;
+                timeLeft = minutes * 60;
+                totalTime = timeLeft; // Set total time for progress calculation
+                updateTimerDisplay();
+                
                 timerId = setInterval(() => {
                     if (timeLeft > 0) {
                         timeLeft--;
@@ -193,7 +223,9 @@
         function resetTimer() {
             clearInterval(timerId);
             timerId = null;
-            timeLeft = 900;
+            const minutes = parseInt(document.getElementById('minutes').value) || 15;
+            timeLeft = minutes * 60;
+            totalTime = timeLeft;
             updateTimerDisplay();
         }
     </script>
